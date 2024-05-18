@@ -10,8 +10,10 @@ class LSRA_Hierarchical:
         self.graph = graph
         self.clusters = []
         self.gateway_nodes = {}
+        self.precomputed_paths = {}
         self.form_clusters()
         self.assign_gateway_nodes()
+        self.precompute_paths()
 
     def add_edge(self, node1, node2, weight):
         self.graph.add_edge(node1, node2, weight=weight)
@@ -31,6 +33,10 @@ class LSRA_Hierarchical:
             gateway_node = cluster[0]
             self.gateway_nodes[gateway_node] = cluster
 
+    def precompute_paths(self):
+        for node in self.graph.nodes():
+            self.precomputed_paths[node] = nx.single_source_dijkstra_path(self.graph, source=node, weight='weight')
+
     def intra_cluster_shortest_path(self, source, target):
         cluster = self.find_cluster(source)
         subgraph = self.graph.subgraph(cluster)
@@ -48,6 +54,8 @@ class LSRA_Hierarchical:
         return full_path
 
     def shortest_path(self, source, target):
+        if source == target:
+            return [source]
         source_cluster = self.find_cluster(source)
         target_cluster = self.find_cluster(target)
 
@@ -78,6 +86,7 @@ class LSRA_Hierarchical:
             if set(cluster) == set(cluster_nodes):
                 return gateway
         return None
+
 
 def generate_connected_graph(num_nodes, edge_probability):
     graph = nx.Graph()
