@@ -19,6 +19,7 @@ class LSRA_Hierarchical:
         self.graph.add_edge(node1, node2, weight=weight)
 
     def form_clusters(self):
+        start_time = time.time()
         num_clusters = 5
         nodes = list(self.graph.nodes())
         random.shuffle(nodes)
@@ -27,20 +28,32 @@ class LSRA_Hierarchical:
             self.clusters.append(nodes[i * cluster_size:(i + 1) * cluster_size])
         if len(nodes) % num_clusters != 0:
             self.clusters[-1].extend(nodes[num_clusters * cluster_size:])
+        end_time = time.time()
+        print(f"Clustering Time: {end_time - start_time:.6f} seconds")
+        # Time Complexity: O(n)
 
     def assign_gateway_nodes(self):
+        start_time = time.time()
         for cluster in self.clusters:
             gateway_node = cluster[0]
             self.gateway_nodes[gateway_node] = cluster
+        end_time = time.time()
+        print(f"Gateway Assignment Time: {end_time - start_time:.6f} seconds")
+        # Time Complexity: O(n)
 
     def precompute_paths(self):
+        start_time = time.time()
         for node in self.graph.nodes():
             self.precomputed_paths[node] = nx.single_source_dijkstra_path(self.graph, source=node, weight='weight')
+        end_time = time.time()
+        print(f"Precomputation Time: {end_time - start_time:.6f} seconds")
+        # Time Complexity: O(n * (n log n + e)) for precomputation
 
     def intra_cluster_shortest_path(self, source, target):
         cluster = self.find_cluster(source)
         subgraph = self.graph.subgraph(cluster)
         return nx.shortest_path(subgraph, source=source, target=target, weight='weight')
+        # Time Complexity: O(n log n + e) per query within a cluster
 
     def inter_cluster_shortest_path(self, source, target):
         source_gateway = self.find_gateway(source)
@@ -52,6 +65,7 @@ class LSRA_Hierarchical:
 
         full_path = path1 + path2[1:] + path3[1:]
         return full_path
+        # Time Complexity: O(n log n + e) per query involving multiple clusters
 
     def shortest_path(self, source, target):
         if source == target:
@@ -87,8 +101,8 @@ class LSRA_Hierarchical:
                 return gateway
         return None
 
-
 def generate_connected_graph(num_nodes, edge_probability):
+    start_time = time.time()
     graph = nx.Graph()
     for i in range(num_nodes):
         graph.add_node(str(i))
@@ -97,17 +111,23 @@ def generate_connected_graph(num_nodes, edge_probability):
             for j in range(i + 1, num_nodes):
                 if random.random() < edge_probability:
                     graph.add_edge(str(i), str(j), weight=random.randint(1, 100))
+    end_time = time.time()
+    print(f"Graph Generation Time: {end_time - start_time:.6f} seconds")
     return graph
 
 def ensure_dense_connectivity(graph, num_nodes, edge_probability):
+    start_time = time.time()
     for i in range(num_nodes):
         for j in range(i + 1, num_nodes):
             if not graph.has_edge(str(i), str(j)):
                 if random.random() < edge_probability:
                     graph.add_edge(str(i), str(j), weight=random.randint(1, 100))
+    end_time = time.time()
+    print(f"Dense Connectivity Time: {end_time - start_time:.6f} seconds")
     return graph
 
 def connect_clusters(graph, clusters, edge_probability):
+    start_time = time.time()
     for cluster in clusters:
         for other_cluster in clusters:
             if cluster != other_cluster:
@@ -115,6 +135,36 @@ def connect_clusters(graph, clusters, edge_probability):
                     for node2 in other_cluster:
                         if random.random() < edge_probability and not graph.has_edge(node1, node2):
                             graph.add_edge(node1, node2, weight=random.randint(1, 100))
+    end_time = time.time()
+    print(f"Cluster Connection Time: {end_time - start_time:.6f} seconds")
+
+def calculate_time_complexity(num_nodes, num_edges):
+    # Graph Generation Complexity
+    graph_generation = f"O(n^2 * p)"
+
+    # Clustering Complexity
+    clustering = f"O(n)"
+
+    # Gateway Assignment Complexity
+    gateway_assignment = f"O(n)"
+
+    # Precomputation Complexity
+    precomputation = f"O(n * (n log n + e)) where e = {num_edges}"
+
+    # Shortest Path Calculation Complexity
+    shortest_path_calc = f"O(n log n + e) where e = {num_edges}"
+
+    # Overall Time Complexity
+    overall_time_complexity = f"O(n * (n log n + e))"
+
+    return {
+        "Graph Generation": graph_generation,
+        "Clustering": clustering,
+        "Gateway Assignment": gateway_assignment,
+        "Precomputation": precomputation,
+        "Shortest Path Calculation": shortest_path_calc,
+        "Overall Time Complexity": overall_time_complexity
+    }
 
 if __name__ == "__main__":
     num_nodes = 50
@@ -154,5 +204,7 @@ if __name__ == "__main__":
     num_nodes = len(graph.nodes())
     num_edges = len(graph.edges())
 
-    time_complexity_category = "O(n log n) Time Complexity"
-    print(f"Estimated time complexity category for LSRA: {time_complexity_category}")
+    time_complexity = calculate_time_complexity(num_nodes, num_edges)
+    print("\nTime Complexity Analysis:")
+    for step, complexity in time_complexity.items():
+        print(f"{step}: {complexity}")
