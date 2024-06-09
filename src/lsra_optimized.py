@@ -20,7 +20,7 @@ class LSRA_Hierarchical:
 
     def form_clusters(self):
         start_time = time.time()
-        num_clusters = 5
+        num_clusters = 5  # Number of clusters
         nodes = list(self.graph.nodes())
         random.shuffle(nodes)
         cluster_size = len(nodes) // num_clusters
@@ -34,7 +34,7 @@ class LSRA_Hierarchical:
     def assign_gateway_nodes(self):
         start_time = time.time()
         for cluster in self.clusters:
-            gateway_node = cluster[0]
+            gateway_node = cluster[0]  # Assign the first node in the cluster as the gateway
             self.gateway_nodes[gateway_node] = cluster
         end_time = time.time()
         self.gateway_assignment_time = end_time - start_time
@@ -155,7 +155,7 @@ def calculate_time_complexity(num_nodes, num_edges, graph_gen_time, cluster_time
     }
 
 if __name__ == "__main__":
-    num_nodes = 50
+    num_nodes = int(input("Enter the number of nodes: "))  # Prompt user to input the number of nodes
     edge_probability = 0.25
 
     graph, graph_gen_time = generate_connected_graph(num_nodes, edge_probability)
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     edge_labels = nx.get_edge_attributes(graph, 'weight')
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
     plt.title('Network Graph')
-    plt.show()
+    plt.show(block=True)  # Display the graph and keep the window open
 
     source_node = '0'
     shortest_paths = lsra_hierarchical.shortest_paths_from_source(source_node)
@@ -186,20 +186,15 @@ if __name__ == "__main__":
     num_nodes = len(graph.nodes())
     num_edges = len(graph.edges())
 
-    time_complexity = calculate_time_complexity(
-        num_nodes,
-        num_edges,
-        graph_gen_time,
-        lsra_hierarchical.clustering_time,
-        lsra_hierarchical.gateway_assignment_time,
-        lsra_hierarchical.precomputation_time,
+    time_complexity_info = calculate_time_complexity(
+        num_nodes, num_edges, graph_gen_time, lsra_hierarchical.clustering_time,
+        lsra_hierarchical.gateway_assignment_time, lsra_hierarchical.precomputation_time,
         lsra_hierarchical.shortest_path_calculation_time
     )
 
-    print("\nTime Complexity Analysis:")
-    for step, value in time_complexity.items():
+    for step, value in time_complexity_info.items():
         if step == "Overall Time Complexity":
-            print(f"{step}: {value}")
+            print(f"{step} - {value}")
         else:
-            complexity, time_taken = value
-            print(f"{step}: {complexity} (Time taken: {time_taken:.6f} seconds)")
+            complexity, duration = value
+            print(f"{step} - Complexity: {complexity}, Time: {duration:.6f} seconds")
