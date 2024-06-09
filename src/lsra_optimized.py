@@ -181,7 +181,7 @@ if __name__ == "__main__":
             print(f"To node {target}: Path: {path}, Distance: {distance}")
         else:
             print(f"To node {target}: No path found")
-    print("Total shortest path calculation time:", lsra_hierarchical.shortest_path_calculation_time, "seconds")
+    print("Total shortest path calculation time:", lsra_hierarchical.shortest_path_calculation_time, "seconds \n")
 
     num_nodes = len(graph.nodes())
     num_edges = len(graph.edges())
