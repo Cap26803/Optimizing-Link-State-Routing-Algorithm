@@ -1,3 +1,7 @@
+# @author: Chinmay Paranjape, Kushal Kaparatti, Prathamesh Chitnis
+# @version: v1.2.0
+# @date: 13-JUN-2024
+
 import matplotlib.pyplot as plt
 
 # Data
