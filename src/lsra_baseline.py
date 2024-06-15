@@ -1,6 +1,6 @@
 # @author: Chinmay Paranjape, Kushal Kaparatti, Prathamesh Chitnis
-# @version: v1.2.0
-# @date: 13-JUN-2024
+# @version: v1.3.0
+# @date: 15-JUN-2024
 
 import random
 import time
@@ -18,22 +18,21 @@ class LSRA_Baseline:
 
     def shortest_path(self, source, target):
         # Initialize distances to infinity
-        distances = {node: float('inf') for node in self.graph.nodes()}
+        distances = {node: float("inf") for node in self.graph.nodes()}
         distances[source] = 0
 
-        # Introduce redundant loop to slow down the process
-        for _ in range(len(self.graph.nodes()) * 2):  # Redundant extra iterations
-            for _ in range(len(self.graph.edges())):  # Nested redundant loop
+        for _ in range(len(self.graph.nodes()) * 2):
+            for _ in range(len(self.graph.edges())):  # Nested loop
                 pass
 
-        # Relax edges repeatedly with additional unnecessary calculations
         for _ in range(len(self.graph.nodes()) - 1):
             for node1, node2 in self.graph.edges():
-                distances[node2] = min(distances[node2], distances[node1] + self.graph[node1][node2]['weight'])
-                # Additional redundant computations
+                distances[node2] = min(
+                    distances[node2],
+                    distances[node1] + self.graph[node1][node2]["weight"],
+                )
                 _ = sum(range(100))
 
-        # Additional redundant step to further slow down the process
         redundant_list = [random.randint(1, 100) for _ in range(1000)]
         redundant_sum = sum(redundant_list)
 
@@ -57,13 +56,13 @@ if __name__ == "__main__":
     # Visualization
     pos = nx.spring_layout(lsra_baseline.graph)
     nx.draw(lsra_baseline.graph, pos, with_labels=True, node_size=700)
-    edge_labels = nx.get_edge_attributes(lsra_baseline.graph, 'weight')
+    edge_labels = nx.get_edge_attributes(lsra_baseline.graph, "weight")
     nx.draw_networkx_edge_labels(lsra_baseline.graph, pos, edge_labels=edge_labels)
-    plt.title('Network Graph')
+    plt.title("Network Graph")
     plt.show()
 
     # Calculate shortest paths from source node '0'
-    source_node = '0'
+    source_node = "0"
     start_time = time.time()
     shortest_paths = lsra_baseline.shortest_path(source_node, str(num_nodes - 1))
     end_time = time.time()

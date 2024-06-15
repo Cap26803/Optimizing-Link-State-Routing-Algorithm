@@ -1,10 +1,9 @@
 # @author: Chinmay Paranjape, Kushal Kaparatti, Prathamesh Chitnis
-# @version: v1.2.0
-# @date: 13-JUN-2024
+# @version: v1.3.0
+# @date: 15-JUN-2024
 
 import base64
 import io
-import os
 import random
 import time
 
@@ -19,7 +18,6 @@ from lsra_optimized import (LSRA_Hierarchical, connect_clusters,
 
 app = Flask(__name__)
 
-
 def plot_graph(graph):
     pos = nx.spring_layout(graph)
     plt.figure(figsize=(10, 7))
@@ -32,7 +30,6 @@ def plot_graph(graph):
     plot_url = base64.b64encode(img.getvalue()).decode("utf8")
     plt.close()
     return plot_url
-
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -55,9 +52,7 @@ def index():
 
         # Optimized Algorithm
         graph, graph_gen_time = generate_connected_graph(num_nodes, 0.25)
-        graph, dense_connectivity_time = ensure_dense_connectivity(
-            graph, num_nodes, 0.25
-        )
+        graph, dense_connectivity_time = ensure_dense_connectivity(graph, num_nodes, 0.25)
         lsra_optimized = LSRA_Hierarchical(graph)
         cluster_connection_time = connect_clusters(graph, lsra_optimized.clusters, 0.25)
         optimized_plot = plot_graph(graph)
@@ -75,9 +70,9 @@ def index():
             optimized_plot=optimized_plot,
             optimized_shortest_paths=optimized_shortest_paths,
             optimized_time=optimized_time,
+            num_clusters=len(lsra_optimized.clusters)
         )
     return render_template("index.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)

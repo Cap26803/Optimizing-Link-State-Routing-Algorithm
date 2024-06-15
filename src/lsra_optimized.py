@@ -1,9 +1,10 @@
 # @author: Chinmay Paranjape, Kushal Kaparatti, Prathamesh Chitnis
-# @version: v1.2.0
-# @date: 13-JUN-2024
+# @version: v1.3.0
+# @date: 15-JUN-2024
 
 import random
 import time
+from math import sqrt
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -24,7 +25,8 @@ class LSRA_Hierarchical:
 
     def form_clusters(self):
         start_time = time.time()
-        num_clusters = 5  # Number of clusters
+        num_nodes = len(self.graph.nodes())
+        num_clusters = int(sqrt(num_nodes))  # Dynamic number of clusters based on the number of nodes
         nodes = list(self.graph.nodes())
         random.shuffle(nodes)
         cluster_size = len(nodes) // num_clusters
@@ -102,6 +104,9 @@ class LSRA_Hierarchical:
             if set(cluster) == set(cluster_nodes):
                 return gateway
         return None
+
+    def get_number_of_clusters(self):
+        return len(self.clusters)
 
 def generate_connected_graph(num_nodes, edge_probability):
     start_time = time.time()
