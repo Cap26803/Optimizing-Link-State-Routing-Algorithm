@@ -1,7 +1,7 @@
 # Optimizing Link State Routing Algorithm
 
 ## Problem Statement
-This project aims to optimize the Link State Routing Algorithm (LSRA) using NetworkX, a Python library for graph analysis. The project focuses on enhancing the efficiency of shortest path calculations, reducing routing convergence time, and simplifying LSRA implementation for network simulations.
+This project aims to address the limitations of the baseline LSRA by exploring and implementing optimization techniques to improve its efficiency in calculating shortest paths. The focus will be on reducing the time complexity of the algorithm, particularly for large-scale network simulations.
 
 ## Objectives
 1. Enhance the efficiency of shortest path calculations.
