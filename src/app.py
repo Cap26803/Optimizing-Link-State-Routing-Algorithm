@@ -73,3 +73,6 @@ def index():
             num_clusters=len(lsra_optimized.clusters)
         )
     return render_template("index.html")
+
+if __name__ == '__main__':
+    app.run(debug=True)
